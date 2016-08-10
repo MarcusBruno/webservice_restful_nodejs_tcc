@@ -1,2 +1,2 @@
-# todo-app
-Simple TODO list app using Node.js, Express and MySQL
+# Web Service RESTful Node.js
+Desenvolvimento de um RESTful em Node.js.
