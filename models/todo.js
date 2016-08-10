@@ -7,7 +7,7 @@ var smtpTransport = nodemailer.createTransport(smtpTransport({
     port: 587,
     auth: {
         user: "marcusbrunogm@gmail.com",
-        pass: "13MB96gm12!"
+        pass: ""
     }
 }));
 
