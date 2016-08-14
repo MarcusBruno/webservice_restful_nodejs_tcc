@@ -60,12 +60,12 @@ function Todo() {
         console.log(todo.rp);
         console.log(todo.senha);
         connection.acquire(function (err, con) {
-            con.query('SELECT * FROM `tb_usuarios` WHERE rp LIKE ' + todo.rp + ' and senha_usuario LIKE ' + todo.senha + '', todo, function (err, result) {
+            con.query('SELECT p.* FROM tb_usuarios AS u JOIN tb_professores AS p ON u.rp = p.rp WHERE u.rp LIKE '+todo.rp+' AND u.senha_usuario LIKE '+todo.senha+'', todo, function (err, result) {
                 con.release();
-                if (err) {
-                    res.send({status: 1, message: false});
+                if (err || result == "") {
+                    res.send({status: "0", message: "false"});
                 } else {
-                    res.send({status: 0, message: true});
+                    res.send({status: "1", message: result});
                 }
             });
         });
