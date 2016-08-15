@@ -63,10 +63,12 @@ function Todo() {
             con.query('SELECT p.* FROM tb_usuarios AS u JOIN tb_professores AS p ON u.rp = p.rp WHERE u.rp LIKE '+todo.rp+' AND u.senha_usuario LIKE '+todo.senha+'', todo, function (err, result) {
                 con.release();
                 if (err || result == "") {
-                    res.send({status: "0", message: "false"});
+                  console.log(result);
+                    res.send({"message": null, "status":[{"status":"0"}]});
                 } else {
-                    res.send({status: "1", message: result});
-                }
+                    console.log(result);
+                    res.send({"message": result, "status":[{"status":"1"}]});
+                    }
             });
         });
     };
