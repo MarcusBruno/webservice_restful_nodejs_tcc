@@ -21,10 +21,11 @@ function Todo() {
         });
     };
 
-    this.getDisciplinasProfessor = function (id, res) {
+    this.getDisciplinasProfessor = function (todo, res) {
+      console.log(todo.rp);
         connection.acquire(function (err, con) {
             //select td.codigo, td.nome, td.descricao from tb_professores_disciplinas as tpd join tb_disciplinas as td on tpd.codigo_disciplina = td.codigo where tpd.codigo_rp = ?'
-            con.query('select td.codigo, td.nome, td.descricao from tb_professores_disciplinas as tpd join tb_disciplinas as td on tpd.codigo_disciplina = td.codigo where tpd.codigo_rp = ?', [id], function (err, result) {
+            con.query('select td.* from tb_professores_disciplinas as tpd join tb_disciplinas as td on tpd.codigo_disciplina = td.codigo where tpd.codigo_rp = '+todo.rp+'', function (err, result) {
                 con.release();
                 res.send(result);
             });

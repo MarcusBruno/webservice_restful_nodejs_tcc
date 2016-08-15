@@ -7,8 +7,8 @@ module.exports = {
     });
 
     //Método que retorna as disciplinas de um professor. (id do professor)
-    app.get('/todo/disciplinas/professor/:id/', function(req, res) {
-      todo.getDisciplinasProfessor(req.params.id, res);
+    app.post('/todo/disciplinas/professor/', function(req, res) {
+      todo.getDisciplinasProfessor(req.body, res);
     });
 
     //Método que retorna os alunos de uma disciplina. (id da disciplinas)
