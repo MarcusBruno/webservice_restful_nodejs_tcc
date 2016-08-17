@@ -12,8 +12,8 @@ module.exports = {
     });
 
     //Método que retorna os alunos de uma disciplina. (id da disciplinas)
-    app.get('/todo/disciplinas/alunos/:id/', function(req, res) {
-      todo.getAlunosDaDisciplina(req.params.id, res);
+    app.post('/todo/disciplinas/alunos/', function(req, res) {
+      todo.getAlunosDaDisciplina(req.body, res);
     });
 
 
