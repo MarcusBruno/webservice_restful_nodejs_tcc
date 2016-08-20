@@ -11,6 +11,11 @@ module.exports = {
       todo.getDisciplinasProfessor(req.body, res);
     });
 
+    //Método que retorna as disciplinas de um aluno. (id do professor)
+    app.post('/todo/disciplinas/aluno/', function(req, res) {
+      todo.getDisciplinasAluno(req.body, res);
+    });
+
     //Método que retorna os alunos de uma disciplina. (id da disciplinas)
     app.post('/todo/disciplinas/alunos/', function(req, res) {
       todo.getAlunosDaDisciplina(req.body, res);
@@ -20,6 +25,11 @@ module.exports = {
     //Login Professor
     app.post('/todo/login/professor/', function(req, res) {
         todo.loginProfessor(req.body, res);
+    });
+
+    //Login Aluno
+    app.post('/todo/login/aluno/', function(req, res) {
+        todo.loginAluno(req.body, res);
     });
 
     //Recuperar Senha Professor
@@ -45,6 +55,11 @@ module.exports = {
     //Fechar Chamada de uma disciplina
     app.put('/todo/professor/fechar/chamada/', function(req, res) {
       todo.fecharChamada(req.body, res);
+    });
+
+    //Buscar a chamada que está aberta (Aluno)
+    app.post('/todo/aluno/chamada/', function(req, res) {
+      todo.obterChamadaAberta(req.body, res);
     });
 
     //Autenticar presença (Aluno)
