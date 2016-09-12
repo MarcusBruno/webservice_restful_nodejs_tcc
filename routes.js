@@ -67,6 +67,11 @@ module.exports = {
       todo.autenticarPresenca(req.body, res);
     });
 
+    //Adição de alunos manualmente na chamada (Aluno)
+    app.post('/todo/presenca/aluno/manual/', function(req, res) {
+      todo.autenticarPresenca(req.body, res);
+    });
+
     app.post('/todo/', function(req, res) {
       todo.create(req.body, res);
     });

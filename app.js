@@ -11,5 +11,7 @@ connection.init();
 routes.configure(app);
 
 var server = app.listen(8000, function() {
+  process.env.TZ = 'America/Campo_Grande';
+  console.log(new Date().toString())
   console.log('Server listening on port ' + server.address().port);
 });
