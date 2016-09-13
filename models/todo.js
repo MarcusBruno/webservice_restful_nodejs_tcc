@@ -216,6 +216,25 @@
       });
     };
 
+    this.checarChamadasAbertas = function(todo, res){
+      console.log(todo);
+      connection.acquire(function (err, con) {
+        con.query('SELECT td.id, td.rp, td.codigo_disciplina, td.horario_inicio as timestamp, tp.nome as professor, tds.nome as disciplina FROM tb_diario as td join tb_professores as tp on td.rp = tp.rp JOIN tb_disciplinas as tds on td.codigo_disciplina = tds.codigo WHERE td.situacao = "1" AND td.rp = ? ', todo.rp, function (err, result) {
+          con.release();
+          if (err) {
+            res.send({ "message":null});
+          } else {
+            if(result == ""){
+              res.send({"message":null});
+            }else{
+              console.log(result);
+              res.send({"message": result, "status":"1"});
+            }
+          }
+        });
+      });
+    };
+
   }
 
   module.exports = new Todo();

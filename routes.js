@@ -72,6 +72,11 @@ module.exports = {
       todo.autenticarPresenca(req.body, res);
     });
 
+    //Verificar se existe alguma chamada aberta (Professor)
+    app.post('/todo/professor/chamada/aberta/', function(req, res) {
+      todo.checarChamadasAbertas(req.body, res);
+    });
+
     app.post('/todo/', function(req, res) {
       todo.create(req.body, res);
     });
