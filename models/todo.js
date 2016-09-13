@@ -186,13 +186,13 @@
         con.query('SELECT tp.nome as nome_professor, tp.rp,  td.codigo as codigo_disciplina, td.nome as nome_disciplina, tdia.id as id_diario, tdia.latitude_professor, tdia.longitude_professor FROM tb_alunos AS ta JOIN tb_alunos_disciplinas AS tad ON ta.ra = tad.codigo_ra JOIN tb_disciplinas AS td ON tad.codigo_disciplina = td.codigo JOIN tb_professores_disciplinas AS tpd ON td.codigo = tpd.codigo_disciplina JOIN tb_professores AS tp ON tpd.codigo_rp = tp.rp JOIN tb_diario AS tdia ON tp.rp = tdia.rp WHERE tad.codigo_disciplina = tpd.codigo_disciplina AND tdia.situacao =1 AND tdia.horario_inicio <= NOW( ) AND tdia.horario_fim >= NOW( ) AND ta.ra =  ? GROUP BY tdia.codigo_disciplina', todo.ra, function (err, result) {
           con.release();
           if (err) {
-            res.send({ "message":null});
+            res.send({ "message":null, "status":"0"});
           } else {
             if(result == ""){
-              res.send({"message":null});
+              res.send({"message":null, "status":"0"});
             }else{
               console.log(result);
-              res.send({"message": result, "status":[{"status":"1"}]});
+              res.send({"message": result, "status":"1"});
             }
           }
         });
@@ -210,7 +210,7 @@
           if (err) {
             res.send({status: 0, message: false});
                 } else {
-            res.send({"message": true, "status":[{"status":"0"}]});
+            res.send({"message": true, "status":"1"});
           }
         });
       });
