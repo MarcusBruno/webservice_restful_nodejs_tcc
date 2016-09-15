@@ -84,4 +84,20 @@ function enviarEmailAosAlunosEncerramentoChamada(emailProfessor, emails) {
             console.log("Message sent: " + response.message);
         }
     });
+
+    //===========================
+
+
+
+            /*connection.acquire(function (err, con) {
+
+                con.query('insert into tb_lista_frequencia (tb_lista_freq_codigo_ra, tb_lista_freq_codigo_rp, tb_lista_freq_codigo_disciplina, tb_lista_freq_id_diario, tb_lista_freq_data_hora, tb_lista_freq_latitude_aluno, tb_lista_freq_longitude_aluno, tb_lista_freq_presenca) VALUES ("' + todo.tb_lista_freq_codigo_ra + '","' + todo.tb_lista_freq_codigo_rp + '","' + todo.tb_lista_freq_codigo_disciplina + '","' + todo.tb_lista_freq_id_diario  + '","' + dateTime + '","' + todo.tb_lista_freq_latitude_aluno + '","' + todo.tb_lista_freq_longitude_aluno + '","'+ todo.tb_lista_freq_presenca+'")', todo, function (err, result) {
+                con.release();
+                if (err) {
+                  res.send({status: 0, message: false});
+                      } else {
+                  res.send({"message": true, "status":"1"});
+                }
+              });
+            });*/
 }

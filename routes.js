@@ -37,6 +37,11 @@ module.exports = {
         todo.recuperarSenhaProfessor(req.body, res);
     });
 
+    //Cadastrar aluno
+    app.post('/todo/aluno/cadastrar/', function(req, res) {
+      todo.cadastrarAluno(req.body, res);
+    });
+
     //Cadastrar dados de um novo professor
     app.post('/todo/cadastrar/dados/professor/', function(req, res) {
       todo.cadastrarDadosProfessor(req.body, res);
