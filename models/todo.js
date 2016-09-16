@@ -70,7 +70,7 @@
 
             this.loginProfessor = function (todo, res) {
               connection.acquire(function (err, con) {
-                con.query('SELECT p.* FROM tb_usuarios AS u JOIN tb_professores AS p ON u.tb_usu_rp = p.rp WHERE u.tb_usu_rp LIKE '+todo.rp+' AND u.tb_usu_senha LIKE '+todo.senha+'', todo, function (err, result) {
+                con.query('SELECT p.* FROM tb_usuarios AS u JOIN tb_professores AS p ON u.tb_usu_rp = p.tb_prof_rp WHERE u.tb_usu_rp LIKE '+todo.rp+' AND u.tb_usu_senha LIKE '+todo.senha+'', todo, function (err, result) {
                   con.release();
                   if (err || result == "") {
                     res.send({"message": null, "status":[{"status":"0"}]});
@@ -105,7 +105,7 @@
 
             this.recuperarSenhaProfessor = function (todo, res) {
               connection.acquire(function (err, con) {
-                con.query('SELECT * FROM tb_professores WHERE rp LIKE "' + todo.rp + '" and email LIKE "' + todo.email + '" and mac_address LIKE "' + todo.mac + '"', todo, function (err, result) {
+                con.query('SELECT * FROM tb_professores WHERE tb_prof_rp LIKE "' + todo.rp + '" and tb_prof_email LIKE "' + todo.email + '" and tb_prof_mac_address LIKE "' + todo.mac + '"', todo, function (err, result) {
                   con.release();
                   if (err) {
                     res.send(result);
@@ -138,6 +138,40 @@
                     res.send({status: 1, message: false});
                   } else {
                     res.send({status: 0, message: true});
+                  }
+                });
+              });
+            };
+
+            this.cadastrarProfessor = function (todo, res) {
+              console.log(todo);
+
+              connection.acquire(function (err, con) {
+                  con.query('insert into tb_usuarios (tb_usu_rp, tb_usu_senha, tb_usu_tipo, tb_usu_situacao, tb_usu_ultimo_acesso) VALUES (?,?,?,?,?);', [todo.tb_usu_rp, todo.tb_usu_senha, todo.tb_usu_tipo, todo.tb_usu_situacao, todo.tb_usu_ultimo_acesso], function (err, result) {
+                  con.release();
+                  if(!err){
+                    console.log("Cadastrou Usuário");
+
+                          con.query('insert into tb_professores (tb_prof_rp, tb_prof_nome, tb_prof_telefone, tb_prof_email, tb_prof_mac_address) VALUES (?,?,?,?,?)', [todo.tb_prof_rp, todo.tb_prof_nome, todo.tb_prof_telefone, todo.tb_prof_email, todo.tb_prof_mac_address], function (err2, result2) {
+                          if (err2) {
+                            console.log("Falhou");
+                            con.query('DELETE FROM tb_usuarios WHERE tb_usu_id = ? ', result.insertId.toString(), function (err3, result3) {
+                              if(!err3){
+                                  console.log("Operação desfeita com sucesso! R.P.:"+todo.tb_prof_rp);
+                                  res.send({"status":"0", "message": false});
+                              }else{
+                                 console.log("FALHA GRAVE: Operação que busca desfazer o cadastro do Professor "+ todo.tb_prof_rp+" falhou!");
+                                 res.send({"status":"-1", "message": false});
+                              }
+                            });
+                          } else {
+                            console.log("SUCESSO: CADASTROU PROFESSOR COM ID:" +result.insertId.toString());
+                            res.send({"message": true, "status":"1"});
+                          }
+                        });
+                  }else{
+                    console.log("FALHA: Não foi possivel cadastrar o professor");
+                    res.send({"message": false, "status":"-0"});
                   }
                 });
               });
@@ -190,7 +224,6 @@
               fechamento.setMinutes(fechamento.getMinutes() + 10);
               var dateTimeFechamento = toTimeZone(fechamento, 'America/Campo_Grande')
 
-
               connection.acquire(function (err, con) {
                 con.query('INSERT INTO  tb_diario (id, rp, codigo_disciplina, horario_inicio, horario_fim, situacao, latitude_professor, longitude_professor)' +
                 ' VALUES ("' + null  + '","' + todo.rp + '","' + todo.disciplina + '","' +dateTimeAbertura+ '","' + dateTimeFechamento+ '","' + todo.situacao + '","' + todo.latitude + '","' + todo.longitude + '")', todo, function (err, result) {
@@ -224,7 +257,7 @@
             this.obterChamadaAberta = function(todo, res){
               console.log(todo);
               connection.acquire(function (err, con) {
-                con.query('SELECT tp.nome as nome_professor, tp.rp,  td.codigo as codigo_disciplina, td.nome as nome_disciplina, tdia.id as id_diario, tdia.latitude_professor, tdia.longitude_professor FROM tb_alunos AS ta JOIN tb_alunos_disciplinas AS tad ON ta.tb_alu_ra = tad.codigo_ra JOIN tb_disciplinas AS td ON tad.codigo_disciplina = td.codigo JOIN tb_professores_disciplinas AS tpd ON td.codigo = tpd.codigo_disciplina JOIN tb_professores AS tp ON tpd.codigo_rp = tp.rp JOIN tb_diario AS tdia ON tp.rp = tdia.rp WHERE tad.codigo_disciplina = tpd.codigo_disciplina AND tdia.situacao =1 AND tdia.horario_inicio <= NOW( ) AND tdia.horario_fim >= NOW( ) AND ta.tb_alu_ra =  ? GROUP BY tdia.codigo_disciplina', todo.ra, function (err, result) {
+                con.query('SELECT tp.	tb_prof_nome as nome_professor, tp.tb_prof_rp,  td.codigo as codigo_disciplina, td.nome as nome_disciplina, tdia.id as id_diario, tdia.latitude_professor, tdia.longitude_professor FROM tb_alunos AS ta JOIN tb_alunos_disciplinas AS tad ON ta.tb_alu_ra = tad.codigo_ra JOIN tb_disciplinas AS td ON tad.codigo_disciplina = td.codigo JOIN tb_professores_disciplinas AS tpd ON td.codigo = tpd.codigo_disciplina JOIN tb_professores AS tp ON tpd.codigo_rp = tp.tb_prof_rp JOIN tb_diario AS tdia ON tp.tb_prof_rp = tdia.rp WHERE tad.codigo_disciplina = tpd.codigo_disciplina AND tdia.situacao =1 AND tdia.horario_inicio <= NOW( ) AND tdia.horario_fim >= NOW( ) AND ta.tb_alu_ra =  ? GROUP BY tdia.codigo_disciplina', todo.ra, function (err, result) {
                   con.release();
                   if (err) {
                     res.send({ "message":null, "status":"0"});
@@ -251,10 +284,10 @@
                           console.log("entrou");
                           con.query('insert into tb_lista_frequencia (tb_lista_freq_codigo_ra, tb_lista_freq_codigo_rp, tb_lista_freq_codigo_disciplina, tb_lista_freq_id_diario, tb_lista_freq_data_hora, tb_lista_freq_latitude_aluno, tb_lista_freq_longitude_aluno, tb_lista_freq_presenca) VALUES ("' + todo.tb_lista_freq_codigo_ra + '","' + todo.tb_lista_freq_codigo_rp + '","' + todo.tb_lista_freq_codigo_disciplina + '","' + todo.tb_lista_freq_id_diario  + '","' + dateTime + '","' + todo.tb_lista_freq_latitude_aluno + '","' + todo.tb_lista_freq_longitude_aluno + '","'+ todo.tb_lista_freq_presenca+'")', todo, function (err, result) {
                           if (err) {
-                            console.log("Chamada realizada.");
+                          console.log("FALHA: O Aluno "+ todo.tb_lista_freq_codigo_ra + " não conseguiu autenticar sua presença na chamada " +todo.tb_lista_freq_id_diario+ ", do professor " +todo.tb_lista_freq_codigo_rp);
                             res.send({"status":"0", "message": false});
                           } else {
-                            console.log("entrou > commit");
+                            console.log("SUCESSO: O Aluno "+ todo.tb_lista_freq_codigo_ra + " autenticou sua presença na chamada " +todo.tb_lista_freq_id_diario+ ", do professor " +todo.tb_lista_freq_codigo_rp);
                             res.send({"message": true, "status":"1"});
                           }
                         });
@@ -267,10 +300,26 @@
               });
             };
 
+            this.autenticarPresencaManual = function (todo, res) {
+              console.log(todo);
+              var dateTime = toTimeZone(new Date(), 'America/Campo_Grande');
+              connection.acquire(function (err, con) {
+                    con.query('insert into tb_lista_frequencia (tb_lista_freq_codigo_ra, tb_lista_freq_codigo_rp, tb_lista_freq_codigo_disciplina, tb_lista_freq_id_diario, tb_lista_freq_data_hora, tb_lista_freq_latitude_aluno, tb_lista_freq_longitude_aluno, tb_lista_freq_presenca) VALUES ("' + todo.tb_lista_freq_codigo_ra + '","' + todo.tb_lista_freq_codigo_rp + '","' + todo.tb_lista_freq_codigo_disciplina + '","' + todo.tb_lista_freq_id_diario  + '","' + dateTime + '","' + todo.tb_lista_freq_latitude_aluno + '","' + todo.tb_lista_freq_longitude_aluno + '","'+ todo.tb_lista_freq_presenca+'")', todo, function (err, result) {
+                    if (err) {
+                      console.log("FALHA: Professor tentou inserir manualmento o aluno "+ todo.tb_lista_freq_codigo_ra + " a chamada "+ todo.tb_lista_freq_id_diario +".");
+                      res.send({"status":"0", "message": false});
+                    } else {
+                      console.log("SUCESSO: Professor adicionou manualmento o aluno "+ todo.tb_lista_freq_codigo_ra + " a chamada "+ todo.tb_lista_freq_id_diario +".");
+                      res.send({"message": true, "status":"1"});
+                    }
+                  });
+              });
+            };
+
             this.checarChamadasAbertas = function(todo, res){
               console.log(todo);
               connection.acquire(function (err, con) {
-                con.query('SELECT td.id, td.rp, td.codigo_disciplina, td.horario_inicio as timestamp, tp.nome as professor, tds.nome as disciplina FROM tb_diario as td join tb_professores as tp on td.rp = tp.rp JOIN tb_disciplinas as tds on td.codigo_disciplina = tds.codigo WHERE td.situacao = "1" AND td.rp = ? ', todo.rp, function (err, result) {
+                con.query('SELECT td.id, td.rp, td.codigo_disciplina, td.horario_inicio as timestamp, tp.tb_prof_nome as professor, tds.nome as disciplina FROM tb_diario as td join tb_professores as tp on td.rp = tp.tb_prof_rp JOIN tb_disciplinas as tds on td.codigo_disciplina = tds.codigo WHERE td.situacao = "1" AND td.rp = ? ', todo.rp, function (err, result) {
                   con.release();
                   if (err) {
                     res.send({ "message":null});
@@ -285,6 +334,23 @@
                 });
               });
             };
+
+
+            this.buscarAutenticaoRealizadas = function(todo, res){
+              console.log(todo);
+              connection.acquire(function (err, con) {
+                con.query('SELECT t.tb_lista_freq_codigo_ra FROM tb_lista_frequencia as t WHERE t.tb_lista_freq_codigo_ra NOT IN (?) AND t.tb_lista_freq_id_diario = "?" ',[todo.alunos, todo.diario], function (err, result) {
+                  con.release();
+                  if (err) {
+                    res.send({ "message":null});
+                  } else {
+                      console.log(result);
+                      res.send(result);
+                  }
+                });
+              });
+            };
+
 
           }
 

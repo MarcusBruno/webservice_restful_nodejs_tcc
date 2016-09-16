@@ -42,14 +42,9 @@ module.exports = {
       todo.cadastrarAluno(req.body, res);
     });
 
-    //Cadastrar dados de um novo professor
-    app.post('/todo/cadastrar/dados/professor/', function(req, res) {
-      todo.cadastrarDadosProfessor(req.body, res);
-    });
-
-    //Cadastrar usuario de acesso de um novo professor
-    app.post('/todo/cadastrar/usuario/professor/', function(req, res) {
-      todo.cadastrarUsuarioProfessor(req.body, res);
+    //Cadastrar professor
+    app.post('/todo/professor/cadastrar/', function(req, res) {
+      todo.cadastrarProfessor(req.body, res);
     });
 
     //Abertura da Chamada
@@ -72,14 +67,19 @@ module.exports = {
       todo.autenticarPresenca(req.body, res);
     });
 
-    //Adição de alunos manualmente na chamada (Aluno)
+    //Professor adiciona aluno manualmente na chamada (Aluno)
     app.post('/todo/presenca/aluno/manual/', function(req, res) {
-      todo.autenticarPresenca(req.body, res);
+      todo.autenticarPresencaManual(req.body, res);
     });
 
     //Verificar se existe alguma chamada aberta (Professor)
     app.post('/todo/professor/chamada/aberta/', function(req, res) {
       todo.checarChamadasAbertas(req.body, res);
+    });
+
+    //Cadastrar professor
+    app.post('/todo/professor/autenticacoes/realizadas/', function(req, res) {
+      todo.buscarAutenticaoRealizadas(req.body, res);
     });
 
     app.post('/todo/', function(req, res) {
@@ -93,5 +93,7 @@ module.exports = {
     app.delete('/todo/:id/', function(req, res) {
       todo.delete(req.params.id, res);
     });
+
+
   }
 };
