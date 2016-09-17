@@ -339,14 +339,30 @@
             this.buscarAutenticaoRealizadas = function(todo, res){
               console.log(todo);
               connection.acquire(function (err, con) {
-                con.query('SELECT t.tb_lista_freq_codigo_ra FROM tb_lista_frequencia as t WHERE t.tb_lista_freq_codigo_ra NOT IN (?) AND t.tb_lista_freq_id_diario = "?" ',[todo.alunos, todo.diario], function (err, result) {
+                var param ="";
+                arrParam = todo.alunos.split(",");
+
+                for(var i=0; i< arrParam.length; i++){
+                    if(!(param == "")){
+                      param += ",\""+arrParam[i]+"\"";
+                    }else{
+                      param += "\""+arrParam[i]+"\"";
+                    }
+                }
+                con.query('SELECT t.tb_lista_freq_codigo_ra FROM tb_lista_frequencia as t WHERE t.tb_lista_freq_codigo_ra NOT IN ('+param+') AND t.tb_lista_freq_id_diario = "'+todo.diario+'" ', function (err, result) {
                   con.release();
                   if (err) {
                     res.send({ "message":null});
                   } else {
-                      console.log(result);
+
                       res.send(result);
+                      /*if(result.tb_lista_freq_codigo_ra.toString() != ""){
+                        console.log("SUCESSO: O Aluno " +result.tb_lista_freq_codigo_ra+ " está presente na chamada " + todo.diario+".");
+                      }else{
+                        console.log("SUCESSO: Nenhum aluno computou a presença até o momento na chamada " + todo.diario+".");
+                      }*/
                   }
+
                 });
               });
             };
