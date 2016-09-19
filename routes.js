@@ -33,7 +33,7 @@ module.exports = {
     });
 
     //Recuperar Senha Professor
-    app.post('/todo/recuperar/senha/professor/', function(req, res) {
+    app.post('/todo/professor/recuperar/senha/', function(req, res) {
         todo.recuperarSenhaProfessor(req.body, res);
     });
 
@@ -80,6 +80,21 @@ module.exports = {
     //Cadastrar professor
     app.post('/todo/professor/autenticacoes/realizadas/', function(req, res) {
       todo.buscarAutenticaoRealizadas(req.body, res);
+    });
+
+    //Buscar a lista de frquencia de um aluno em uma disciplina
+    app.post('/todo/aluno/listafrequencia/', function(req, res) {
+      todo.buscarListaFrequenciaAluno(req.body, res);
+    });
+
+    //Professor: Inserir nova senha
+    app.put('/todo/professor/inserir/senha/', function(req, res) {
+      todo.inserirNovaSenhaProfessor(req.body, res);
+    });
+
+    //Professor: Inserir nova senha
+    app.put('/todo/professor/inserir/senha/', function(req, res) {
+      todo.inserirNovaSenhaAluno(req.body, res);
     });
 
     app.post('/todo/', function(req, res) {
