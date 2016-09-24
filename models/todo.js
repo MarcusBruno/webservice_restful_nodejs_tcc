@@ -8,8 +8,8 @@ var smtpTransport = nodemailer.createTransport(smtpTransport({
   secureConnection: false,
   port: 587,
   auth: {
-    user: "",
-    pass: ""
+    user: "marcusbrunogm@gmail.com",
+    pass: "13MB96gm12!"
   }
 }));
 
@@ -330,11 +330,11 @@ function Todo() {
   this.buscarAutenticaoRealizadas = function(todo, res){
     console.log(todo);
     connection.acquire(function (err, con) {
-      var param ="";
+      var param ="\"\"";
       arrParam = todo.alunos.split(",");
 
       for(var i=0; i< arrParam.length; i++){
-        if(!(param == "")){
+        if(!(param == "\"\"")){
           param += ",\""+arrParam[i]+"\"";
         }else{
           param += "\""+arrParam[i]+"\"";
@@ -428,7 +428,7 @@ function Todo() {
   //Função que envia um email ao usuário que esqueceu a senha
   function enviarEmailRecuperacaoSenha(email, code) {
     var mailOptions = {
-      from: "marcusbrunogm123821231zza@gmail.com",
+      from: "marcusbrunogm@gmail.com",
       to: email,
       subject: "IFMS - Recuperação de Senha",
       text: "Para recuperar sua senha digite este código de segurança: "+code,
