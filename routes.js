@@ -2,9 +2,6 @@ var todo = require('./models/todo');
 
 module.exports = {
   configure: function(app) {
-    app.get('/todo/', function(req, res) {
-      todo.get(res);
-    });
 
     //Método que retorna as disciplinas de um professor. (id do professor)
     app.post('/todo/disciplinas/professor/', function(req, res) {
@@ -21,7 +18,6 @@ module.exports = {
       todo.getAlunosDaDisciplina(req.body, res);
     });
 
-
     //Login Professor
     app.post('/todo/login/professor/', function(req, res) {
         todo.loginProfessor(req.body, res);
@@ -35,6 +31,11 @@ module.exports = {
     //Recuperar Senha Professor
     app.post('/todo/professor/recuperar/senha/', function(req, res) {
         todo.recuperarSenhaProfessor(req.body, res);
+    });
+
+    //Recuperar Senha Professor
+    app.post('/todo/aluno/recuperar/senha/', function(req, res) {
+        todo.recuperarSenhaAluno(req.body, res);
     });
 
     //Cadastrar aluno
@@ -92,8 +93,8 @@ module.exports = {
       todo.inserirNovaSenhaProfessor(req.body, res);
     });
 
-    //Professor: Inserir nova senha
-    app.put('/todo/professor/inserir/senha/', function(req, res) {
+    //Aluno: Inserir nova senha
+    app.put('/todo/aluno/inserir/senha/', function(req, res) {
       todo.inserirNovaSenhaAluno(req.body, res);
     });
 
@@ -108,7 +109,5 @@ module.exports = {
     app.delete('/todo/:id/', function(req, res) {
       todo.delete(req.params.id, res);
     });
-
-
   }
 };

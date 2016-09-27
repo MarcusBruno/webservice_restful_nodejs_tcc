@@ -1,7 +1,9 @@
+//source: http://www.yogasaikrishna.com/simple-restful-api-using-nodejs-express-and-mysql/
 var express = require('express');
 var bodyparser = require('body-parser');
 var connection = require('./connection');
 var routes = require('./routes');
+
 
 var app = express();
 app.use(bodyparser.urlencoded({extended: true}));

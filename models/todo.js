@@ -29,7 +29,6 @@ function Todo() {
       con.query('select td.* from tb_alunos_disciplinas as tad join tb_disciplinas as td on tad.codigo_disciplina = td.codigo where tad.codigo_ra = '+todo.ra+'', function (err, result) {
         con.release();
         res.send(result);
-
       });
     });
   };
@@ -65,7 +64,7 @@ function Todo() {
         if (err || result == "") {
           res.send({"message": null, "status":[{"status":"0"}]});
         } else {
-          res.send({"message": result, "status":[{"status":"1"}]});
+          res.send({"message": result, "status":"1"});
         }
       });
     });
@@ -126,7 +125,7 @@ function Todo() {
           res.send({"status":"-1"});
         } else {
           //Get email do professor.
-          con.query('SELECT tb_prof_email FROM tb_professores WHERE tb_prof_ra = ?', todo.ra, function (err2, result2) {
+          con.query('SELECT tb_alu_email FROM tb_alunos WHERE tb_alu_ra = ?', todo.ra, function (err2, result2) {
 
             if (err2) {
               result2.send({"status":"-1"});
@@ -388,28 +387,12 @@ function Todo() {
   this.inserirNovaSenhaAluno = function (todo, res) {
     console.log(todo);
     connection.acquire(function (err, con) {
-      con.query('SELECT a.tb_alu_mac_address FROM tb_usuarios AS u JOIN tb_alunos AS a ON u.tb_usu_ra = a.tb_alu_ra WHERE u.tb_usu_ra = ? AND u.tb_usu_tipo = "Aluno"', todo.ra, function (err, result) {
+      con.query('update tb_usuarios set	tb_usu_senha= ? where tb_usu_ra = ?',[todo.senha,todo.ra], function (err, result) {
         con.release();
-        console.log(result);
-        if (err || result == "") {
-          res.send({"message": false, "status":"0"});
+        if (err) {
+          res.send({status: 0, message: 'TODO update failed'});
         } else {
-          console.log(result[0].tb_alu_mac_address +" - "+ todo.mac_address);
-          if(result[0].tb_alu_mac_address.toString() === todo.mac_address.toString()){
-            console.log("Entrou");
-            con.query('update tb_usuarios set	tb_usu_senha= ? where 	tb_usu_rp = ?',[todo.senha,todo.ra], function (err, result) {
-
-              if (err) {
-                res.send({status: 0, message: 'TODO update failed'});
-              } else {
-                res.send({status: 1, message: 'TODO updated successfully'});
-              }
-            });
-
-          }else{
-            console.log("Falha");
-            res.send({"message": false, "status":"-1"});
-          }
+          res.send({status: 1, message: 'TODO updated successfully'});
         }
       });
     });
